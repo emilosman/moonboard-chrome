@@ -22,9 +22,5 @@
     "scripts": [
       "background.js"
     ]
-  },
-  "options_ui": {
-    "page": "options/options.html",
-    "chrome_style": true
   }
 }

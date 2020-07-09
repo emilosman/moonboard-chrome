@@ -1,5 +1,5 @@
 <template>
-  <div v-if='!status'>
+  <div v-if='status == "new"'>
 
     <div class="container" v-if='boards'>
       <div class="boards">
@@ -22,8 +22,14 @@
     </div>
 
   </div>
-  <div v-else-if='status == 200'>
+  <div v-else-if='status == "sending"'>
+    sending...
+  </div>
+  <div v-else-if='status == "success"'>
     success!
+  </div>
+  <div v-else-if='status == "error"'>
+    error!
   </div>
 </template>
 
@@ -35,7 +41,7 @@
       return {
         boards: null,
         image: null,
-        status: null
+        status: 'new'
       }
     },
     mounted() {
@@ -45,17 +51,22 @@
 
         axios.get(`http://localhost:3000/api/boards/`).then((response) => {
           this.boards = response.data
-          console.log(this.boards)
         }
       );
     },
     methods: {
       sendImage: function(board) {
+        this.status = 'sending'
         axios.post(`http://localhost:3000/items/`, {
             board_id: board.id,
             image_url: this.image
           }).then((response) => {
-          this.status = response.status
+          if (response.status == 200) {
+            this.status = 'success'
+          }
+          else {
+            this.status = 'error'
+          }
         });
       }
     }
